@@ -1,0 +1,18 @@
+import math
+from collections import Counter
+
+msg = "DIGITAL COMMUNICATION".replace(" ", "")
+freq = Counter(msg)
+n = len(msg)
+H = 0
+
+print("Symbol\tFreq\tProbability\tInformation")
+
+for s, f in sorted(freq.items()):
+    p = f/n
+    I = -math.log2(p)
+    H += p*I
+    print(f"{s}\t{f}\t{p:.4f}\t\t{I:.4f}")
+
+print("\nTotal Symbols =", n)
+print("Entropy = {:.4f} bits/symbol".format(H))

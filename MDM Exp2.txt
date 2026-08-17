@@ -1,0 +1,49 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+A, f, N, L = 5, 2, 20, 8
+t = np.linspace(0, 1, 1000)
+st = np.linspace(0, 1, N)
+
+# Analog signal & sampling
+x = A * np.sin(2*np.pi*f*t)
+s = A * np.sin(2*np.pi*f*st)
+
+# Quantization
+levels = np.linspace(-A, A, L)
+q = np.array([np.argmin(abs(levels-v)) for v in s])
+qs = levels[q]
+
+# PCM encoding
+b = int(np.log2(L))
+code = ''.join(format(i, f'0{b}b') for i in q)
+
+print("Quantization Levels:", L)
+print("Bits/Sample:", b)
+print("Sampled Values:", np.round(s[:5],2))
+print("Quantized Indices:", q[:5])
+print("Binary Stream:", code[:15]+"...")
+
+# Graphs
+plt.figure(figsize=(10,8))
+
+plt.subplot(311)
+plt.plot(t,x,'b',label='Analog')
+plt.stem(st,s,linefmt='r-',markerfmt='ro',basefmt='k-',label='Sampled')
+plt.title("Analog Signal and Sampling")
+plt.grid(); plt.legend()
+
+plt.subplot(312)
+plt.plot(st,s,'b--',label='Original')
+plt.step(st,qs,'orange',where='mid',label='Quantized')
+plt.title("Quantization (3-bit / 8-level)")
+plt.grid(); plt.legend()
+
+plt.subplot(313)
+plt.plot(st,qs,'g--o',label='Reconstructed')
+plt.stem(st,qs,linefmt='g-',markerfmt='go',basefmt='k-')
+plt.title("Demodulated Signal")
+plt.grid(); plt.legend()
+
+plt.tight_layout()
+plt.show()

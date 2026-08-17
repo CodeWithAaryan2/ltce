@@ -1,0 +1,38 @@
+import heapq
+import math
+
+s = input("Symbols: ").split()
+p = list(map(float, input("Probabilities: ").split()))
+
+heap = [(x, a) for x, a in zip(p, s)]
+heapq.heapify(heap)
+
+while len(heap) > 1:
+    p1, a = heapq.heappop(heap)
+    p2, b = heapq.heappop(heap)
+    heapq.heappush(heap, (p1+p2, (a,b)))
+
+codes = {}
+
+def huff(node, code=""):
+    if isinstance(node, str):
+        codes[node] = code
+    else:
+        huff(node[0], code+"0")
+        huff(node[1], code+"1")
+
+huff(heap[0][1])
+
+print("\nHuffman Codes:")
+for a in s:
+    print(a, ":", codes[a])
+
+H = sum(-x*math.log2(x) for x in p)
+L = sum(x*len(codes[a]) for a,x in zip(s,p))
+E = H/L*100
+R = 100-E
+
+print("\nEntropy =", round(H,4))
+print("Average Length =", round(L,4))
+print("Efficiency =", round(E,2), "%")
+print("Redundancy =", round(R,2), "%")

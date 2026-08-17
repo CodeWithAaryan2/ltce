@@ -1,0 +1,48 @@
+# Cyclic Code Generation and Error Detection
+
+data = input("Enter data bits: ")
+generator = input("Enter generator bits: ")
+
+# Append zeros
+r = len(generator) - 1
+dividend = data + '0' * r
+
+# Modulo-2 division
+temp = list(dividend)
+
+for i in range(len(data)):
+    if temp[i] == '1':
+        for j in range(len(generator)):
+            temp[i + j] = str(
+                int(temp[i + j]) ^ int(generator[j])
+            )
+
+# Remainder
+remainder = ''.join(temp[-r:])
+
+# Codeword
+codeword = data + remainder
+
+print("\nData       :", data)
+print("Generator  :", generator)
+print("Remainder  :", remainder)
+print("Codeword   :", codeword)
+
+# Error detection
+received = input("\nEnter received codeword: ")
+
+temp = list(received)
+
+for i in range(len(received) - len(generator) + 1):
+    if temp[i] == '1':
+        for j in range(len(generator)):
+            temp[i + j] = str(
+                int(temp[i + j]) ^ int(generator[j])
+            )
+
+check = ''.join(temp[-r:])
+
+if '1' in check:
+    print("Error detected!")
+else:
+    print("No error detected.")

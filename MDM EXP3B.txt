@@ -1,0 +1,10 @@
+import math
+
+p = [0.6, 0.2, 0.1, 0.1]
+H = 0
+
+for x in p:
+    I = -math.log2(x)
+    H += x * I
+
+print("Entropy =", round(H, 3), "bits/symbol")
